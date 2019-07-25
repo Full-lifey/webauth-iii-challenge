@@ -24,10 +24,12 @@ router.post('/register', (req, res) => {
 
 router.post('/login', (req, res) => {
   let { username, password } = req.body;
+  console.log(username, password);
 
-  Users.findBy(username)
+  Users.findBy({ username })
     .first()
     .then(user => {
+      console.log('back from Db', user);
       if (user && bcrypt.compareSync(password, user.password)) {
         const token = generateToken(user);
         res.status(200).json({ message: `Welcome ${username}`, token });
@@ -36,7 +38,7 @@ router.post('/login', (req, res) => {
       }
     })
     .catch(err => {
-      res.status(500).json({ message: 'server problem, unable to login' });
+      res.status(500).json(err);
     });
 });
 
